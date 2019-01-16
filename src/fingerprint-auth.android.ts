@@ -32,12 +32,6 @@ export class FingerprintAuth implements FingerprintAuthApi {
   available(): Promise<BiometricIDAvailableResult> {
     return new Promise((resolve, reject) => {
       try {
-        if (!this.keyguardManager || !this.keyguardManager.isKeyguardSecure()) {
-          resolve({
-            any: false
-          });
-          return;
-        }
 
         // The fingerprint API is only available from Android 6.0 (M, Api level 23)
         if (android.os.Build.VERSION.SDK_INT < 23) {
@@ -57,6 +51,13 @@ export class FingerprintAuth implements FingerprintAuthApi {
             any: true,
             touch: true
           });
+        }
+        
+        if (!this.keyguardManager || !this.keyguardManager.isKeyguardSecure()) {
+          resolve({
+            any: false
+          });
+          return;
         }
       } catch (ex) {
         console.log(`fingerprint-auth.available: ${ex}`);
